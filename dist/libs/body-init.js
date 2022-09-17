@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2019. Author Hubert Formin <hformin@gmail.com>
- */
 
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +9,7 @@ const image_format = ['apng', 'bmp', 'gif', 'ico', 'cur', 'jpeg', 'jpg', 'jpeg',
     'pjp', 'png', 'svg', 'tif', 'tiff', 'webp'];
 
 ipcRender.on('body-init', function (event, arg) {
-    body.css({width: arg.width ? arg.width : 170 , margin: arg.margin ? arg.margin : 0});
+    body.css({width: arg.width ? arg.width : 170 ,height: arg.height ? arg.height : 170 , margin: arg.margin ? arg.margin : 0,position:'relative'});
     event.sender.send('body-init-reply', {status: true, error: null});
 });
 // render each line
@@ -24,43 +21,43 @@ async function renderDataToHTML(event, arg) {
     switch (arg.line.type) {
         case 'text':
             try {
-              body.append(generatePageText(arg.line));
-              // sending msg
-              event.sender.send('render-line-reply', {status: true, error: null});
+                body.append(generatePageText(arg.line));
+                // sending msg
+                event.sender.send('render-line-reply', {status: true, error: null});
             } catch (e) {
                 event.sender.send('render-line-reply', {status: false, error: e.toString()});
             }
-        return;
+            return;
         case 'image':
             await getImageFromPath(arg.line)
                 .then(img => {
                     body.append(img);
                     event.sender.send('render-line-reply', {status: true, error: null});
                 }).catch(e => {
-                event.sender.send('render-line-reply', {status: false, error: e.toString()});
-            })
-        return;
+                    event.sender.send('render-line-reply', {status: false, error: e.toString()});
+                })
+            return;
         case 'qrCode':
             try {
-                body.append(`<div id="qrCode${arg.lineIndex}" style="${arg.line.style};text-align: ${arg.line.position ? '-webkit-' + arg.line.position : '-webkit-left'};"></div>`);
+                body.append(`<div id="qrCode${arg.lineIndex}" style="${arg.line.style}"></div>`);
                 new QRCode(document.getElementById(`qrCode${arg.lineIndex}`), {
-                  text: arg.line.value,
-                  width: arg.line.width ? arg.line.width : 1,
-                  height: arg.line.height ? arg.line.height : 15,
-                  colorDark: '#000000',
-                  colorLight: '#ffffff',
-                  correctLevel: QRCode.CorrectLevel.H
+                    text: arg.line.value,
+                    width: arg.line.width ? arg.line.width : 15,
+                    height: arg.line.height ? arg.line.height : 15,
+                    colorDark: '#000000',
+                    colorLight: '#ffffff',
+                    correctLevel: QRCode.CorrectLevel.H
                 });
-               // $(`#qrcode${barcodeNumber}`).attr('style',arg.style);
-               event.sender.send('render-line-reply', {status: true, error: null});
+                // $(`#qrcode${barcodeNumber}`).attr('style',arg.style);
+                event.sender.send('render-line-reply', {status: true, error: null});
             } catch(e) {
                 event.sender.send('render-line-reply', {status: false, error: e.toString()});
             }
-        return;
+            return;
         case 'barCode':
             try {
-                body.append(`<div style="width: 100%;text-align: ${arg.line.position ? arg.line.position : 'left'}"class="barcode-container" style="text-align: center;width: 100%;">
-                    <img class="barCode${arg.lineIndex}"  style="${arg.line.style}"
+                body.append(`<div class="barcode-container" style="${arg.line.style}">
+                    <img class="barCode${arg.lineIndex}"  style="width:100%;height:100%"
                 jsbarcode-value="${arg.line.value}"
                 jsbarcode-width="${arg.line.width ? arg.line.width : 1}"
                 jsbarcode-height="${arg.line.height ? arg.line.height : 15}"
@@ -73,7 +70,7 @@ async function renderDataToHTML(event, arg) {
             } catch(e) {
                 event.sender.send('render-line-reply', {status: false, error: e.toString()});
             }
-        return;
+            return;
         case 'table':
             // Creating table
             const tableContainer = $(`
@@ -175,34 +172,35 @@ async function renderDataToHTML(event, arg) {
             body.append(tableContainer);
             // send
             event.sender.send('render-line-reply', {status: true, error: null});
-        return;
+            return;
     }
 }
 /**
-* @function
+ * @function
  * @name generatePageText
  * @param arg {pass argumet of type PosPrintData}
  * @description used for type text, used to generate type text
-* */
+ * */
 function generatePageText(arg) {
     const text = arg.value;
     const css = arg.css;
     arg.style = arg.style ? arg.style : '';
-    const div = $(`<div class="font" style="${arg.style}">${text}</div>`);
+    const div = $(`<div style="${arg.style}">${text}</div>`);
     if (css) {
         for (const key in css) {
             const item = css[key];
             div.css(key, item);
         }
     }
+
     return div;
 }
 /**
-* @function
+ * @function
  * @name generateTableCell
  * @param arg {pass argumet of type PosPrintData}
  * @description used for type text, used to generate type text
-* */
+ * */
 function generateTableCell(arg, type = 'td') {
     const text = arg.value;
     const css = arg.css;
@@ -217,11 +215,11 @@ function generateTableCell(arg, type = 'td') {
     return th;
 }
 /**
-* @function
+ * @function
  * @name getImageFromPath
  * @param arg {pass argumet of type PosPrintData}
  * @description get image from path and return it as an html img
-* */
+ * */
 function getImageFromPath(arg) {
     return new Promise((resolve, reject) => {
         let uri =''
@@ -240,9 +238,9 @@ function getImageFromPath(arg) {
         }
 
 
-        const img_con = $(`<div style="width: 100%;text-align:${arg.position ? arg.position : 'left'}"></div>`);
+        const img_con = $(`<div style="${arg.style}"></div>`);
         arg.style = arg.style ? arg.style : '';
-        const img = $(`<img src="${uri}" style="height: ${arg.height ? arg.height : '50px'};width: ${arg.width ? arg.width : 'auto'};${arg.style}" />`);
+        const img = $(`<img src="${uri}" style="height: ${arg.height ? arg.height : '100%'};width: ${arg.width ? arg.width : '100%'};" />`);
         if (arg.css) {
             for (const key in arg.css) {
                 const item = arg.css[key];

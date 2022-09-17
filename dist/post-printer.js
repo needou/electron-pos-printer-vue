@@ -90,7 +90,8 @@ var PosPrinter = /** @class */ (function () {
                 show: !!options.preview,
                 webPreferences: {
                     nodeIntegration: true,
-                    contextIsolation: false
+                    contextIsolation: false,
+                    enableRemoteModule: true //启用remote方式
                 }
             });
             // mainWindow
