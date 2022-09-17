@@ -52,8 +52,9 @@ export class PosPrinter {
                 height: 1200,
                 show: !!options.preview,
                 webPreferences: {
-                    nodeIntegration: true,        // For electron >= 4.0.0
-                    contextIsolation: false
+                    nodeIntegration: true,
+                    contextIsolation: false,
+                    enableRemoteModule: true //启用remote方式
                 }
             });
             // mainWindow

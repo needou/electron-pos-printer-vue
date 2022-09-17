@@ -224,14 +224,22 @@ function generateTableCell(arg, type = 'td') {
 * */
 function getImageFromPath(arg) {
     return new Promise((resolve, reject) => {
-        const data = fs.readFileSync(arg.path);
-        let ext = path.extname(arg.path).slice(1);
-        if (image_format.indexOf(ext) === -1) {
-            reject(new Error(ext +' file type not supported, consider the types: ' + image_format.join()));
+        let uri =''
+        //如果是base64则直接赋值
+        if(arg.path.indexOf('data:image/')!=-1){
+            uri =arg.path
+        }else{
+            const data = fs.readFileSync(arg.path);
+            let ext = path.extname(arg.path).slice(1);
+            if (image_format.indexOf(ext) === -1) {
+                reject(new Error(ext +' file type not supported, consider the types: ' + image_format.join()));
+            }
+            if (ext === 'svg') { ext = 'svg+xml'; }
+            // insert image
+            uri = 'data:image/' + ext + ';base64,' + data.toString('base64');
         }
-        if (ext === 'svg') { ext = 'svg+xml'; }
-        // insert image
-        const uri = 'data:image/' + ext + ';base64,' + data.toString('base64');
+
+
         const img_con = $(`<div style="width: 100%;text-align:${arg.position ? arg.position : 'left'}"></div>`);
         arg.style = arg.style ? arg.style : '';
         const img = $(`<img src="${uri}" style="height: ${arg.height ? arg.height : '50px'};width: ${arg.width ? arg.width : 'auto'};${arg.style}" />`);

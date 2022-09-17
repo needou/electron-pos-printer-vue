@@ -3,30 +3,30 @@
 ![Version](https://img.shields.io/npm/v/electron-pos-printer?label=version)
 ![Issues](https://img.shields.io/github/issues/Hubertformin/electron-pos-printer)
 
-# Electron-pos-printer
+# Electron-pos-printer-vue base on Electron-pos-printer
 An electron printer plugin, currently supports 58mm, 
 requires electron >= 4.x.x.
 
 ### Installation
 ```bash
-$ npm install electron-pos-printer
-$ yarn add electron-pos-printer
+$ npm install electron-pos-printer-vue
+$ yarn add electron-pos-printer-vue
 ```
 ### Usage
 #### In main process
 ```js
-const {PosPrinter} = require("electron-pos-printer");
+const {PosPrinter} = require("electron-pos-printer-vue");
 ```
 #### In render process
 ```js
-const {PosPrinter} = require('electron').remote.require("electron-pos-printer");
+const {PosPrinter} = require('electron').remote.require("electron-pos-printer-vue");
 ```
 ### Demo
 
 Check out this [Demo](https://github.com/fssonca/electron-printer ) by [fssonca](https://github.com/fssonca) 
 
 ```js
-const {PosPrinter} = require("electron-pos-printer");
+const {PosPrinter} = require("electron-pos-printer-vue");
 const path = require("path");
 
 const options = {
@@ -42,7 +42,7 @@ const options = {
 const data = [
    {
      type: 'image',                                       
-     path: path.join(__dirname, 'assets/banner.png'),     // file path
+     path: path.join(__dirname, 'assets/banner.png'),     // file path or base64Data
      position: 'center',                                  // position of image: 'left' | 'center' | 'right'
      width: '60px',                                           // width of image in px; default: auto
      height: '60px',                                          // width of image in px; default: 50 or '50px'
@@ -125,7 +125,7 @@ PosPrinter.print(data, options)
 ### Usage
 
 ```typescript
-import {PosPrinter, PosPrintData, PosPrintOptions} from "electron-pos-printer";
+import {PosPrinter, PosPrintData, PosPrintOptions} from "electron-pos-printer-vue";
 import * as path from "path";
 
 const options: PosPrintOptions = {
