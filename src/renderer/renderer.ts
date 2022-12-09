@@ -57,14 +57,16 @@ async function renderDataToHTML(event, arg) {
         case 'qrCode':
             try {
                 let container = document.createElement('div');
-                container =  applyElementStyles(container, arg.line.style) as HTMLDivElement;
+                if(arg.line && arg.line.style){
+                    container =  applyElementStyles(container, arg.line.style) as HTMLDivElement;
+                }
                 //container.style.display = 'flex';
                 //container.style.justifyContent = arg.line?.position || 'left';
 
 
                 const qrCode = document.createElement('canvas');
                 qrCode.setAttribute('id', `qrCode${arg.lineIndex}`);
-                applyElementStyles(qrCode, { 'textAlign': arg.line.position ? '-webkit-' + arg.line.position : '-webkit-left'});
+                //applyElementStyles(qrCode, { 'textAlign': arg.line.position ? '-webkit-' + arg.line.position : '-webkit-left'});
 
                 container.appendChild(qrCode);
                 body.appendChild(container);
@@ -84,8 +86,9 @@ async function renderDataToHTML(event, arg) {
         case 'barCode':
             try {
                 let container = document.createElement('div');
-                container =  applyElementStyles(container, arg.line.style) as HTMLDivElement;
-
+                if(arg.line && arg.line.style) {
+                    container = applyElementStyles(container, arg.line.style) as HTMLDivElement;
+                }
                 const barcodeEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 barcodeEl.setAttributeNS(null, 'id', `barCode-${arg.lineIndex}`);
                 container.appendChild(barcodeEl);
