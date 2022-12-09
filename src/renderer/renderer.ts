@@ -56,9 +56,11 @@ async function renderDataToHTML(event, arg) {
             return;
         case 'qrCode':
             try {
-                const container = document.createElement('div');
-                container.style.display = 'flex';
-                container.style.justifyContent = arg.line?.position || 'left';
+                let container = document.createElement('div');
+                container =  applyElementStyles(container, arg.style) as HTMLDivElement;
+                //container.style.display = 'flex';
+                //container.style.justifyContent = arg.line?.position || 'left';
+
 
                 const qrCode = document.createElement('canvas');
                 qrCode.setAttribute('id', `qrCode${arg.lineIndex}`);
@@ -81,9 +83,13 @@ async function renderDataToHTML(event, arg) {
             return;
         case 'barCode':
             try {
+                let container = document.createElement('div');
+                container =  applyElementStyles(container, arg.style) as HTMLDivElement;
+
                 const barcodeEl = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 barcodeEl.setAttributeNS(null, 'id', `barCode-${arg.lineIndex}`);
-                body.appendChild(barcodeEl);
+                container.appendChild(barcodeEl);
+                body.appendChild(container);
                 
                 JsBarcode(`#barCode-${arg.lineIndex}`, arg.line.value, {
                     // format: "",
