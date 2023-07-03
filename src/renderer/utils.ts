@@ -157,6 +157,7 @@ export function generateQRCode(elementId: string, { value, height = 15, width = 
                 height,
                 errorCorrectionLevel: 'H',
                 color: '#000',
+                margin:1
             };
         QRCode.toCanvas(element, value, options)
             .then(resolve)

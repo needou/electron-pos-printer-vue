@@ -18,7 +18,8 @@ const body = document.getElementById('main') as HTMLElement;
 ipcRender.on('body-init', function (event, arg) {
     body.style.width = arg?.width || '100%';
     body.style.margin = arg?.margin ||  0;
-
+    body.style.height = arg?.height || 'auto';
+    body.style.overflow = arg?.overflow || 'hidden';
     event.sender.send('body-init-reply', {status: true, error: null});
 });
 /**
